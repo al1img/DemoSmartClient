@@ -52,9 +52,11 @@ typedef void (*Runner)();
 
 constexpr int RESOURCE_TEMP = 1;
 constexpr int RESOURCE_LIGHT = 2;
+constexpr int RESOURCE_SWITCH = 3;
 
 const std::string RESOURCE_TYPE_TEMP = "oic.r.temperaturesensor";
 const std::string RESOURCE_TYPE_LIGHT = "oic.r.light";
+const std::string RESOURCE_TYPE_SWITCH = "oic.r.switch.binary";
 
 RCSRemoteResourceObject::Ptr g_selectedResource;
 std::vector<RCSRemoteResourceObject::Ptr> g_discoveredResources;
@@ -410,9 +412,10 @@ std::string selectResourceType()
     std::cout << "========================================================" << std::endl;
     std::cout << "1. Temperature Resource Discovery" << std::endl;
     std::cout << "2. Light Resource Discovery" << std::endl;
+    std::cout << "3. Switch Resource Discovery" << std::endl;
     std::cout << "========================================================" << std::endl;
 
-    switch (processUserInput(RESOURCE_TEMP, RESOURCE_LIGHT)) {
+    switch (processUserInput(RESOURCE_TEMP, RESOURCE_SWITCH)) {
     case RESOURCE_TEMP: {
         g_attrKey = "Temperature";
         return RESOURCE_TYPE_TEMP;
@@ -420,6 +423,10 @@ std::string selectResourceType()
     case RESOURCE_LIGHT: {
         g_attrKey = "Brightness";
         return RESOURCE_TYPE_LIGHT;
+    }
+    case RESOURCE_SWITCH: {
+        g_attrKey = "Switch";
+        return RESOURCE_TYPE_SWITCH;
     }
     }
 
@@ -454,6 +461,9 @@ void discoverResource()
 
         std::cout << "uri : " << discoveredResource->getUri() << std::endl;
         std::cout << "host address : " << discoveredResource->getAddress() << std::endl;
+        for (auto type : discoveredResource->getTypes()) {
+            std::cout << "types : " << type << std::endl;
+        }
 
         g_discoveredResources.push_back(discoveredResource);
 
